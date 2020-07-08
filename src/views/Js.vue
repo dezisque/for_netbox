@@ -2,10 +2,24 @@
   <div>
     <div class="container">
       <newUser @updateData="addItem"></newUser>
+      <span>
+        Sort by:
+        <select v-model="filterName">
+          <option value="0">ID</option>
+          <option value="1">Name</option>
+          <option value="2">Age</option>
+          <option value="3">Phone</option>
+          <option value="4">Email</option>
+        </select>
+      </span>
       <div class="loader" v-if="loading">Loading...</div>
       <h2 v-else-if="data.length <= 0">Nothing here... :(</h2>
       <table v-else>
-        <tr v-for="(item, index) in data" :key="index" class="table__row">
+        <tr
+          v-for="(item, index) in filterUsers"
+          :key="index"
+          class="table__row"
+        >
           <td v-for="field of item" :key="field.field" class="table__item">
             {{ field.field }}:
             <input
@@ -39,7 +53,18 @@ export default {
       editable: false,
       loading: true,
       errors: [],
+      filterName: "0",
     };
+  },
+  computed: {
+    filterUsers: function () {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      return this.data.sort((a, b) =>
+        String(a[+this.filterName].value).localeCompare(
+          String(b[+this.filterName].value)
+        )
+      );
+    },
   },
   created() {
     fetch("https://frontend-test.netbox.ru/")
@@ -51,28 +76,20 @@ export default {
       })
       .then((json) => {
         this.data = json;
-        console.log(json);
         this.loading = false;
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error)
       });
   },
   methods: {
     validateData(item) {
-      console.log(
-        item.reduce((acc, it) => {
-          acc[it.field.toLowerCase()] = it.value;
-          return acc;
-        }, {})
-      );
       this.errors = this.dataValidation(
         item.reduce((acc, it) => {
           acc[it.field.toLowerCase()] = it.value;
           return acc;
         }, {})
       );
-      console.log(this.errors);
       return this.errors.length ? false : true;
     },
     deleteItem(id) {
@@ -88,10 +105,9 @@ export default {
         })
         .then(() => {
           this.data = this.data.filter((item) => item[0].value !== id);
-          console.log(this.data);
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     },
     editItem(id) {
@@ -115,7 +131,7 @@ export default {
               console.log("Updated: ", this.data);
             })
             .catch((error) => {
-              console.log(error);
+              console.error(error);
             });
           this.$set(item, "editable", false);
         }
@@ -125,7 +141,6 @@ export default {
     },
     addItem(inpData) {
       this.data.push(inpData);
-      console.log(this.data);
     },
   },
 };

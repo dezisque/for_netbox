@@ -69,7 +69,7 @@ export default {
           }
           throw new Error("Response error");
         })
-        .catch((e) => console.log(e));
+        .catch((e) => console.error(e));
     },
   },
 };
