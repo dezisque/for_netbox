@@ -1,28 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <nav class="nav">
+      <h2>
+        Website created by
+        <a href="https://github.com/dezisque">Dezisque</a> for Netbox
+      </h2>
+      <router-link class="nav__link" to="/html">Html</router-link>
+      <router-link class="nav__link" to="/js">Js</router-link>
+    </nav>
+    <hr />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  components: {},
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<style scoped>
+nav {
+  margin: 0 auto;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+.nav__link {
+  font-size: 1.2em;
+  padding: 0 20px;
 }
 </style>
