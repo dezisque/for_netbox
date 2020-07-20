@@ -28,7 +28,7 @@
               v-model="field.value"
             />
           </td>
-          <td @click="deleteItem(item[0].value)">Удалить</td>
+          <td @click="deleteUser(item[0].value)">Удалить</td>
           <td @click.prevent="editItem(item[0].value)">
             {{ !item.editable ? "Редактировать" : "Сохранить" }}
           </td>
@@ -41,6 +41,7 @@
 <script>
 import newUser from "@/components/newUser";
 import { validation } from "@/Mixins/validation";
+import { mapGetters, mapMutations } from "vuex"
 export default {
   name: "Js",
   components: {
@@ -49,7 +50,6 @@ export default {
   mixins: [validation],
   data() {
     return {
-      data: [],
       editable: false,
       loading: true,
       errors: [],
@@ -57,6 +57,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      data: 'allUsers'
+    }),
     filterUsers: function () {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.data.sort((a, b) =>
@@ -66,23 +69,12 @@ export default {
       );
     },
   },
-  created() {
-    fetch("https://frontend-test.netbox.ru/")
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Response error");
-      })
-      .then((json) => {
-        this.data = json;
-        this.loading = false;
-      })
-      .catch((error) => {
-        console.error(error)
-      });
+  async mounted() {
+    await this.$store.dispatch('fetchUsers');
+    this.loading = false;
   },
   methods: {
+    ...mapMutations(['deleteUser']),
     validateData(item) {
       this.errors = this.dataValidation(
         item.reduce((acc, it) => {
@@ -91,24 +83,6 @@ export default {
         }, {})
       );
       return this.errors.length ? false : true;
-    },
-    deleteItem(id) {
-      fetch(`https://frontend-test.netbox.ru/?method=delete&id=${id}`, {
-        method: "post",
-        mode: "cors",
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Response error");
-        })
-        .then(() => {
-          this.data = this.data.filter((item) => item[0].value !== id);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
     },
     editItem(id) {
       const item = this.data.find((item) => item[0].value === id);

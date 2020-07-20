@@ -3,6 +3,7 @@ import App from "./App.vue";
 import VueRouter from "vue-router";
 import HtmlCss from "@/views/HtmlCss";
 import Js from "@/views/Js";
+import store from "./store"
 
 const routes = [
   { path: "/html", component: HtmlCss },
@@ -18,6 +19,7 @@ const router = new VueRouter({
 });
 
 new Vue({
-  router: router,
+  router,
+  store,
   render: (h) => h(App),
 }).$mount("#app");

@@ -20,6 +20,35 @@
         </div>
       </div>
     </div>
+    <div class="grid">
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.1</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.2</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.3</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.4</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.5</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.6</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.7</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.8</p>
+      </div>
+      <div class="grid__item">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, reprehenderit.9</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -31,6 +60,26 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&subset=cyrillic");
+.grid{
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 1em;
+}
+.grid__item{
+  background-color: #999900;
+  padding: 10px;
+}
+.grid__item:nth-child(1){
+  grid-row: 1/3;
+}
+.grid__item:nth-child(2){
+  grid-column: 2/4;
+}
+.grid__item:nth-child(3){
+  grid-column: 2/4;
+}
 .back {
   position: relative;
   z-index: 2;
