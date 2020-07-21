@@ -4,7 +4,7 @@
     <ul v-if="errors.length">
       <li v-for="error in errors" :key="error">{{ error }}</li>
     </ul>
-    <form v-on:submit.prevent="validateData">
+    <form v-on:submit.prevent="addUser(newUser)">
       <label for="name">Name: </label>
       <input type="text" id="name" placeholder="name" v-model="newUser.name" />
       <label for="age">Age: </label>
@@ -29,48 +29,17 @@
 </template>
 
 <script>
-import { validation } from "@/Mixins/validation";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "newUser",
-  mixins: [validation],
-  data() {
-    return {
-      newUser: {
-        id: null,
-        name: null,
-        age: null,
-        phone: null,
-        "e-mail": null,
-      },
-      errors: [],
-    };
+  computed: {
+    ...mapGetters({
+      errors: "allErrors",
+      newUser: "newUser",
+    }),
   },
   methods: {
-    validateData() {
-      this.errors = this.dataValidation(this.newUser);
-      this.errors.length ? "" : this.sendData();
-    },
-    sendData() {
-      const newUser = this.newUser;
-      fetch(
-        `https://frontend-test.netbox.ru/?method=add&name=${newUser.name}&age=${newUser.age}&phone=${newUser.phone}&email=${newUser["e-mail"]}`
-      )
-        .then((response) => {
-          if (response.ok) {
-            this.$emit("updateData", [
-              { field: "ID", type: "integer", value: new Date().valueOf() },
-              { field: "Name", type: "string", value: newUser.name },
-              { field: "Age", type: "integer", value: newUser.age },
-              { field: "Phone", type: "string", value: newUser.phone },
-              { field: "Email", type: "string", value: newUser["e-mail"] },
-            ]);
-            this.newUser = {};
-            return response.json();
-          }
-          throw new Error("Response error");
-        })
-        .catch((e) => console.error(e));
-    },
+    ...mapMutations(["addUser"]),
   },
 };
 </script>

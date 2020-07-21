@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container">
-      <newUser @updateData="addItem"></newUser>
+      <newUser></newUser>
       <span>
         Sort by:
         <select v-model="filterName">
@@ -28,8 +28,8 @@
               v-model="field.value"
             />
           </td>
-          <td @click="deleteUser(item[0].value)">Удалить</td>
-          <td @click.prevent="editItem(item[0].value)">
+          <td class="del-item" @click="deleteUser(item[0].value)">Удалить</td>
+          <td class="edit-item" @click.prevent="editUser(item[0].value)">
             {{ !item.editable ? "Редактировать" : "Сохранить" }}
           </td>
         </tr>
@@ -40,25 +40,22 @@
 
 <script>
 import newUser from "@/components/newUser";
-import { validation } from "@/Mixins/validation";
-import { mapGetters, mapMutations } from "vuex"
+import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "Js",
   components: {
     newUser,
   },
-  mixins: [validation],
   data() {
     return {
-      editable: false,
       loading: true,
-      errors: [],
       filterName: "0",
     };
   },
   computed: {
     ...mapGetters({
-      data: 'allUsers'
+      data: "allUsers",
+      errors: "allErrors",
     }),
     filterUsers: function () {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -70,52 +67,11 @@ export default {
     },
   },
   async mounted() {
-    await this.$store.dispatch('fetchUsers');
+    await this.$store.dispatch("fetchUsers");
     this.loading = false;
   },
   methods: {
-    ...mapMutations(['deleteUser']),
-    validateData(item) {
-      this.errors = this.dataValidation(
-        item.reduce((acc, it) => {
-          acc[it.field.toLowerCase()] = it.value;
-          return acc;
-        }, {})
-      );
-      return this.errors.length ? false : true;
-    },
-    editItem(id) {
-      const item = this.data.find((item) => item[0].value === id);
-      if (item.editable === true) {
-        if (this.validateData(item)) {
-          fetch(
-            `https://frontend-test.netbox.ru/?method=update&id=${item[0].value}&name=${item[1].value}&age=${item[2].value}&phone=${item[3].value}&email=${item[4].value}`,
-            {
-              method: "post",
-              mode: "cors",
-            }
-          )
-            .then((response) => {
-              if (response.ok) {
-                return response.json();
-              }
-              throw new Error("Response error");
-            })
-            .then(() => {
-              console.log("Updated: ", this.data);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          this.$set(item, "editable", false);
-        }
-      } else {
-        this.$set(item, "editable", true);
-      }
-    },
-    addItem(inpData) {
-      this.data.push(inpData);
-    },
+    ...mapMutations(["deleteUser", "editUser"]),
   },
 };
 </script>
@@ -132,6 +88,13 @@ export default {
 }
 tr {
   border-bottom: 1px solid black;
+}
+.del-item {
+  color: red;
+}
+.del-item,
+.edit-item {
+  cursor: pointer;
 }
 .loader {
   color: #000099;
